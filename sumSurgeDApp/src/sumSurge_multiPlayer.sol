@@ -88,17 +88,17 @@ function randomBoard(uint256 _timestamp) internal returns (uint8[12] memory) {
 
 		if (diff > 3 && diff < 6){
 			opSel = ranNum(5) + 9;
-			boardSel = ranNum(12);
+			boardSel = ranNum(12) - 1;
 			players[msg.sender].board[boardSel] = opSel;
     } else if (diff >= 6 && diff < 8) {
 			for (uint8 i = 0; i < 2; i++) {
 				opSel = ranNum(5) + 9;
-				boardSel = ranNum(12);
+				boardSel = ranNum(12) - 1;
 				if (tmp == boardSel) {
-					boardSel = ranNum(12);
+					boardSel = ranNum(12) - 1;
 				}
         if (boardSel == tmp) {
-            boardSel = ranNum(12);
+            boardSel = ranNum(12) - 1;
         }
         tmp = boardSel;
 				players[msg.sender].board[boardSel] = opSel;
@@ -106,15 +106,15 @@ function randomBoard(uint256 _timestamp) internal returns (uint8[12] memory) {
 		} else { 
 			for (uint8 i = 0; i < 3; i++) {
 				opSel = ranNum(5) + 9;
-				boardSel = ranNum(12);
+				boardSel = ranNum(12) - 1;
           if (tmp == boardSel) {
-            boardSel = ranNum(12);
+            boardSel = ranNum(12) - 1;
           }
           if (tmp == boardSel) {
             boardSel = ranNum(12);
           }
           if (tmp == boardSel) {
-            boardSel = ranNum(12);
+            boardSel = ranNum(12) - 1;
           }
           tmp = boardSel;
           players[msg.sender].board[boardSel] = opSel;
