@@ -11,7 +11,6 @@ contract Sumsurge{
 		uint score;
 		uint payout;
 	}	
-	uint8 [] public operators = [10, 11, 12, 13, 14, 15];
 	mapping (address => Player) public players;
 
 	constructor() {
@@ -76,47 +75,51 @@ contract Sumsurge{
     	);
 		return (num);
 	}
+
 	function remakeBoard() internal {
 		uint8 diff; uint8 opSel; uint8 boardSel; uint8 tmp;
-		
-		boardSel = 0;
+
+		tmp = 0;
 		diff = players[msg.sender].level;
 
 		if (diff > 3 && diff < 6){
-			opSel = ranNum(5);
+			opSel = ranNum(5) + 9;
 			boardSel = ranNum(12);
-			board[boardSel] = operators[opSel];
-		} else if (diff >= 6 && diff < 8) {
+			board[boardSel] = opSel;
+    	} else if (diff >= 6 && diff < 8) {
 			for (uint8 i = 0; i < 2; i++) {
-				opSel = ranNum(5);
-				tmp = ranNum(12);
+				opSel = ranNum(5) + 9;
+				boardSel = ranNum(12);
 				if (tmp == boardSel) {
 					boardSel = ranNum(12);
-					if (boardSel == tmp) {
-						boardSel = ranNum(12);
-					}
 				}
-				board[boardSel] = operators[opSel];
+        		if (boardSel == tmp) {
+            	boardSel = ranNum(12);
+        		}
+        		tmp = boardSel;
+				board[boardSel] = opSel;
 			}
-		} else { 
+		} else {
 			for (uint8 i = 0; i < 3; i++) {
-				opSel = ranNum(5);
-				tmp = ranNum(12);
-				if (tmp == boardSel) {
-					boardSel = ranNum(12);
-					if (boardSel == tmp) {
-						boardSel = ranNum(12);
-						if (boardSel == tmp) {
-							boardSel = ranNum(12);
-						}
-					}
-				}
-				board[boardSel] = operators[opSel];
-			}
-			
+				opSel = ranNum(5) + 9;
+				boardSel = ranNum(12);
+          if (tmp == boardSel) {
+            boardSel = ranNum(12);
+          }
+          if (tmp == boardSel) {
+            boardSel = ranNum(12);
+          }
+          if (tmp == boardSel) {
+            boardSel = ranNum(12);
+          }
+          tmp = boardSel;
+          board[boardSel] = opSel;
+		  }
+
 		}
 	}
 
+	
 	function getBoard() public view returns (uint8[] memory){
     	return (board);  
   	}
