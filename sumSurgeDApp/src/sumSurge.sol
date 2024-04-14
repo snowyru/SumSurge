@@ -1,39 +1,44 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.8.13;
+pragma solidity >=0.4.1 <=0.9.1;
 
 contract Sumsurge{
 	address public admin;
+	uint8[] public board;
+  
 	struct Player {
 		address id;
 		uint8 level;
 		uint score;
 		uint payout;
 	}	
-	uint8 public operators[] = [10, 11, 12, 13, 14, 15];
-	mapping (uint => Player) public players;
+	uint8 [] public operators = [10, 11, 12, 13, 14, 15];
+	mapping (address => Player) public players;
 
 	constructor() {
 		admin = msg.sender;
 	}
-	function randomBoard() internal view returns (uint8[] memory){
+	// block.difficulty
+	function randomBoard(uint256 _timestamp) internal {
 		uint256 seed;
-		uint8 [] memory board;
 
 		seed = uint256(
 			keccak256(
-				abi.encodePacked(block.timestamp, block.difficulty)
+				abi.encodePacked(_timestamp, "1212")
 		));
 		for (uint8 i = 0; i < 12; i++) {
-			board[i] = uint8(
+			board.push(uint8(
 				uint256(keccak256(abi.encodePacked(seed, i))) % 9 + 1
-			)
+      		));
 		}
-		return (board);
+	}
+	function resetBoard() public {
+    	for (uint8 i = 0; i < 12; i++) {
+    		board.pop();
+		}
 	}
 	
-	function start() external returns (uint8[] memory) {
+	function start() external returns (uint8[] memory){
 
-		uint8 [] memory board = randomBoard();
 		Player memory newPlayer = Player({
 			id: msg.sender,
 			level: 0,
@@ -41,19 +46,20 @@ contract Sumsurge{
 			payout: 0
 		});
 		players[msg.sender] = newPlayer; 
+    	randomBoard(block.timestamp);
 		return (board);
 	}
 
 	function nextLevel(uint _score) external returns (uint8 [] memory){
-		uint8 [] memory board;
 
 		players[msg.sender].score += _score;
 		players[msg.sender].level++;
+    	resetBoard();
 		if (players[msg.sender].level > 3){
-			board = randomBoard();	
-			remakeBoard(board);	
+			randomBoard(block.timestamp);	
+			remakeBoard();	
 		} else {
-			board = randomBoard();
+			randomBoard(block.timestamp);
 		}
 		return (board);
 	}
@@ -63,18 +69,16 @@ contract Sumsurge{
 		uint256 seed;
 
 		seed = uint256(
-			keccak256(abi.encodePacked(block.timestamp, block.difficulty))
+			keccak256(abi.encodePacked(block.timestamp, "SALT"))
 		);
 		num = uint8(
         	uint256(keccak256(abi.encodePacked(seed, players[msg.sender].level))) % _i + 1
     	);
-		
 		return (num);
 	}
-
-	function remakeBoard(uint8 [] memory board) internal view {
+	function remakeBoard() internal {
 		uint8 diff; uint8 opSel; uint8 boardSel; uint8 tmp;
-
+		
 		boardSel = 0;
 		diff = players[msg.sender].level;
 
@@ -82,7 +86,7 @@ contract Sumsurge{
 			opSel = ranNum(5);
 			boardSel = ranNum(12);
 			board[boardSel] = operators[opSel];
-		} else if (diff >=6 && diff < 8) {
+		} else if (diff >= 6 && diff < 8) {
 			for (uint8 i = 0; i < 2; i++) {
 				opSel = ranNum(5);
 				tmp = ranNum(12);
@@ -94,7 +98,7 @@ contract Sumsurge{
 				}
 				board[boardSel] = operators[opSel];
 			}
-		} else {
+		} else { 
 			for (uint8 i = 0; i < 3; i++) {
 				opSel = ranNum(5);
 				tmp = ranNum(12);
@@ -113,8 +117,14 @@ contract Sumsurge{
 		}
 	}
 
+	function getBoard() public view returns (uint8[] memory){
+    	return (board);  
+  	}
+
 	function payOut() external payable {
 		uint amount = players[msg.sender].score / 1000;
 		players[msg.sender].payout = amount;
+		
 	}
 }
+
