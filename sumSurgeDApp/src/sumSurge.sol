@@ -4,10 +4,10 @@ pragma solidity ^0.8.13;
 contract Sumsurge{
 	address public admin;
 	struct Player {
-		address id,
-		uint16 level,
-		uint score,
-		uint payout,
+		address id;
+		uint16 level;
+		uint score;
+		uint payout;
 	}	
 	uint8 public operators[] = [10, 11, 12, 13, 14, 15];
 	mapping (uint => Player) public players;
