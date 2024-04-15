@@ -133,9 +133,17 @@ contract Sumsurge{
     	require(players[msg.sender].score > 0, "No payout");
     	_;
     }
-    function payOut() public payable validatePay {
+	function payOut() public payable validatePay {
         players[msg.sender].payout = players[msg.sender].score / 1000;
-        celoToken.transfer(players[msg.sender].id ,players[msg.sender].payout);
-		delete players[msg.sender];
+        IERC20(_celoTokenAddress).approve(
+                admin,
+                players[msg.sender].payout
+        );
+        IERC20(_celoTokenAddress).transferFrom(
+                admin,
+                players[msg.sender].id,
+                players[msg.sender].payout
+        );
+        delete players[msg.sender];
     }
 } 
