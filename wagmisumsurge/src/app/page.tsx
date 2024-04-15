@@ -22,7 +22,9 @@ function App() {
 
   const handleClick = (value, rowIndex) => {
     if (rowIndex === activeRow) {
-      setScore([...score, Number(value)]);
+      const newScore = Number(value);
+      setScore([...score, newScore]);
+      setTotalScore(totalScore + newScore); 
       setActiveRow(activeRow - 1); 
       setLastClicked(value); 
       if (rowIndex === 0) {
@@ -34,7 +36,8 @@ function App() {
   const [lastClicked, setLastClicked] = useState(null);
 
   const handleEnd = () => {
-    setTotalScore(totalScore + score.reduce((a, b) => a + b, 0)); 
+    alert(`Total Score: ${totalScore}`); 
+    setTotalScore(0);
     setScore([]); 
     setActiveRow(3); 
     setGameStatus('playing'); 
