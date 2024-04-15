@@ -11,8 +11,10 @@ Sum Surge enables users to earn *Celo token rewards* by engaging in an interacti
 
 ## Development Process
 In the creation of this game, we utilized the following technologies:
-- *Front-end: *Wagmi
-- *Back-end: *Solidity
+- *Front-end: Wagmi*
+- *Front-end: Nextjs*
+- *Back-end: Javascript*
+- *Back-end: Solidity*
 
 ## Overcoming Challenges
 Navigating through unfamiliar territory, we, as students, encountered numerous obstacles due to our limited knowledge of blockchain development. From mastering Solidity for contract development to utilizing Remix as our development environment, and integrating wallet interactions on the front-end using Wagmi, we faced a steep learning curve.
