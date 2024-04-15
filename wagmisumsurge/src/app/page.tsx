@@ -100,8 +100,8 @@ function App() {
 
 
 <div className="min-h-screen bg-gold flex items-center justify-center">
+        <h1 className="text-4xl text-center font-bold">Game Part: </h1>
     <div className="text-center mx-9 space-y-4">
-        <h1 className="text-4xl text-center font-bold">Game Part</h1>
         <h1 className="text-4xl font-bold">Sum Surge!</h1>
     </div>      
         <motion.div className="" style={{ display: "grid", placeContent: "center", height: "100vh", gap: "0.8rem", }}>
