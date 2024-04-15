@@ -89,10 +89,10 @@ function App() {
 
       <h1 >Game Start</h1>
 
-      <div style={{ display: "grid", placeContent: "center", height: "100vh", gap: "0.8rem", }}>
+      <motion.div className="" style={{ display: "grid", placeContent: "center", height: "100vh", gap: "0.8rem", }}>
         <MotionConfig transition={{ duration: 0.7, ease: "backInOut", times: [0, 0.25, 1] }}>
-          <motion.div className="flex justify-center bg-black p-10 items-center h-screen bg-gray-100">
-            <motion.div className="grid grid-rows-4 grid-cols-3 gap-4 w-[500px] h-4/5">
+          <motion.div className="flex justify-center bg-black p-10 items-center h-screen ">
+            <motion.div className="grid grid-rows-4 bg-black grid-cols-3 gap-4 w-[500px] h-4/5">
               {gridValues.map((value, index) => (
                 <motion.button
                   key={index}
@@ -107,16 +107,16 @@ function App() {
               ))}
               {gameStatus === 'end' && (
                 <div>
-                  <button onClick={handleEnd}>End Game</button>
-                  <button onClick={handleContinue}>Continue Game</button>
+                  <motion.button className="bg-blue-500 hover:bg-blue-700 text-white font-bold my-2 py-2 px-4 rounded" onClick={handleEnd}>End Game</motion.button>
+                  <motion.button className="bg-blue-500 hover:bg-blue-700 text-white font-bold my-2 py-2 px-4 rounded" onClick={handleContinue}>Continue Game</motion.button>
                 </div>
               )}
             </motion.div>
           </motion.div>
         </MotionConfig>
 
-        <motion.div>Total Score: {totalScore}</motion.div>
-      </div>
+        <motion.div className="pb-4" >Total Score: {totalScore}</motion.div>
+      </motion.div>
 
     </>
   )
