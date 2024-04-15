@@ -23,30 +23,12 @@ function App() {
   const handleClick = (value, rowIndex) => {
     if (rowIndex === activeRow) {
       setScore([...score, Number(value)]);
-      setActiveRow(activeRow - 1); 
-      setLastClicked(value); 
-      if (rowIndex === 0) {
-        setGameStatus('end'); 
-      }
+      setActiveRow(activeRow - 1);
+      setLastClicked(value);
     }
   };
 
   const [lastClicked, setLastClicked] = useState(null);
-
-  const handleEnd = () => {
-    setTotalScore(totalScore + score.reduce((a, b) => a + b, 0)); 
-    setScore([]); 
-    setActiveRow(3); 
-    setGameStatus('playing'); 
-  };
-
-  const handleContinue = () => {
-    setScore([]);
-    setActiveRow(3);
-  };
-
-  const [totalScore, setTotalScore] = useState(0);
-  const [gameStatus, setGameStatus] = useState('playing');
 
 
   return (
@@ -88,6 +70,7 @@ function App() {
 
       <div style={{ display: "grid", placeContent: "center", height: "100vh", gap: "0.8rem", }}>
         <MotionConfig transition={{ duration: 0.7, ease: "backInOut", times: [0, 0.25, 1] }}>
+
           <motion.div className="flex justify-center bg-black p-10 items-center h-screen bg-gray-100">
             <motion.div className="grid grid-rows-4 grid-cols-3 gap-4 w-[500px] h-4/5">
               {gridValues.map((value, index) => (
@@ -102,17 +85,12 @@ function App() {
                   {value}
                 </motion.button>
               ))}
-              {gameStatus === 'end' && (
-                <div>
-                  <button onClick={handleEnd}>End Game</button>
-                  <button onClick={handleContinue}>Continue Game</button>
-                </div>
-              )}
             </motion.div>
           </motion.div>
+
         </MotionConfig>
 
-        <motion.div>Total Score: {totalScore}</motion.div>
+        <motion.div>Total Score: {score.reduce((a, b) => a + b, 0)}</motion.div>
       </div>
 
     </>
