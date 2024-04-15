@@ -1,6 +1,7 @@
 # Sum Surge: Blockchain Summation Game
 
 ## Check out the demo 
+[live Vercel](https://vercel-sum-surge-8kbx.vercel.app/)
 [Youtube](https://youtube.com/playlist?list=PLs7oquYd7lZd4yvNBEnAGrQkEQCSvXSPF&si=DaS5sGJZdp1rHvEF)
 
 ## Inspiration
