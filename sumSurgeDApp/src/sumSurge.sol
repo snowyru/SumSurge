@@ -82,58 +82,45 @@ contract Sumsurge{
         );
         return (num);
     }
+    // Function to randomly assign numbers from [10, 11, 12, 13, 14, 15]
     function remakeBoard() internal {
-        uint8 diff; uint8 opSel; uint8 boardSel; uint8 tmp;
+        uint256 diff = uint256(players[msg.sender].level);
+        uint256 tmp;
 
-        tmp = 0;
-        diff = players[msg.sender].level;
-
-        if (diff > 3 && diff < 6){
-            opSel = ranNum(5) + 9;
-            boardSel = ranNum(12) - 1;
-            players[msg.sender].board[boardSel] = opSel;
+        if (diff > 3 && diff < 6) {
+            uint256 opSel = uint256(ranNum(5)) + 10; // Choose from [10, 11, 12, 13, 14, 15]
+            uint256 boardSel = uint256(ranNum(12));
+            players[msg.sender].board[boardSel] = uint8(opSel);
         } 
         if (diff >= 6 && diff < 8) {
-            for (uint8 i = 0; i < 2; i++) {
-                opSel = ranNum(5) + 9;
-                boardSel = ranNum(12) - 1;
-                if (tmp == boardSel) {
-                    boardSel = ranNum(12) - 1;
-                }
-                if (boardSel == tmp) {
-                    boardSel = ranNum(12) - 1;
+            for (uint256 i = 0; i < 2; i++) {
+                uint256 opSel = uint256(ranNum(5)) + 10;
+                uint256 boardSel = uint256(ranNum(12));
+                while (boardSel == tmp) {
+                    boardSel = uint256(ranNum(12));
                 }
                 tmp = boardSel;
-                players[msg.sender].board[boardSel] = opSel;
+                players[msg.sender].board[boardSel] = uint8(opSel);
             }
         }
         if (diff >= 8) {
-            for (uint8 i = 0; i < 3; i++) {
-                opSel = ranNum(5) + 9;
-                boardSel = ranNum(12) - 1;
-                if (tmp == boardSel) {
-                    boardSel = ranNum(12) - 1;
-                }
-                if (tmp == boardSel) {
-                    boardSel = ranNum(12);
-                }
-                if (tmp == boardSel) {
-                    boardSel = ranNum(12) - 1;
+            for (uint256 i = 0; i < 3; i++) {
+                uint256 opSel = uint256(ranNum(5)) + 10;
+                uint256 boardSel = uint256(ranNum(12));
+                while (boardSel == tmp) {
+                    boardSel = uint256(ranNum(12));
                 }
                 tmp = boardSel;
-                players[msg.sender].board[boardSel] = opSel;
+                players[msg.sender].board[boardSel] = uint8(opSel);
             }
         }
     }
-    
+
     function getBoard() public view returns (uint8[12] memory){
         return (players[msg.sender].board);
     }
- 	modifier validatePay() {
-    	require(players[msg.sender].score > 0, "No payout");
-    	_;
-    }
-	function payOut() public payable validatePay {
+	function payOut() public payable {
+		require(players[msg.sender].score > 0, "No payout");
         players[msg.sender].payout = players[msg.sender].score / 1000;
         IERC20(_celoTokenAddress).approve(
                 admin,
