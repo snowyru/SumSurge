@@ -6,7 +6,7 @@ contract Sumsurge{
     address public admin;
     IERC20 private celoToken;
     address internal _celoTokenAddress =
-        0xF194afDf50B03e69Bd7D057c1Aa9e10c9954E4C9;
+        0x471EcE3750Da237f93B8E339c536989b8978a438;
     struct Player {
         address id;
         uint8 level;
@@ -122,11 +122,11 @@ contract Sumsurge{
 	function payOut() public payable {
 		require(players[msg.sender].score > 0, "No payout");
         players[msg.sender].payout = players[msg.sender].score / 1000;
-        IERC20(_celoTokenAddress).approve(
+        celoToken.approve(
                 admin,
                 players[msg.sender].payout
         );
-        IERC20(_celoTokenAddress).transferFrom(
+        celoToken.transferFrom(
                 admin,
                 players[msg.sender].id,
                 players[msg.sender].payout
