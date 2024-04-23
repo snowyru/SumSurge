@@ -46,6 +46,8 @@ function App() {
     };
 
     const handleContinue = () => {
+      const randomNumbers = Array.from({length:12}, () => Math.floor(Math.random() * 10));
+        setGridValues(randomNumbers);
         setScore([]);
         setActiveRow(3);
     };
