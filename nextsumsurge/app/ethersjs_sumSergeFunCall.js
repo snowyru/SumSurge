@@ -2,13 +2,13 @@ import { ethers } from 'ethers';
 
 // Function to get the admin address
 async function getAdmin() {
-  const admin = await contract.functions.admin();
+  const admin = await contract.functions.admin().send({ from: 'YOUR_ADDRESS' });
   console.log('Admin Address:', admin);
 }
 
 // Function to get the board
 async function getBoard() {
-  const board = await contract.functions.getBoard();
+  const board = await contract.functions.getBoard().send({ from: 'YOUR_ADDRESS' });
   console.log('Board:', board);
 }
 

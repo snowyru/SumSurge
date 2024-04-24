@@ -37,12 +37,13 @@ function App() {
     const [lastClicked, setLastClicked] = useState(null);
 
     const handleEnd = () => {
+        console.log('triggering a payout..........');
+        triggerPayout();
         alert(`Total Score: ${totalScore}`); 
         setTotalScore(0);
         setScore([]); 
         setActiveRow(3); 
         setGameStatus('playing'); 
-        triggerPayout()
     };
 
     const handleContinue = () => {
