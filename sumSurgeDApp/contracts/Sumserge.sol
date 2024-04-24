@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity >=0.8.0 <=0.9.1;
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+pragma solidity ^0.5.0;
+import "./IERC20.sol";
 
-contract Sumsurge{
+contract Sumsurge {
     address public admin;
     IERC20 private celoToken;
     address internal _celoTokenAddress =
@@ -12,27 +12,26 @@ contract Sumsurge{
         uint8 level;
         uint score;
         uint payout;
-    uint8[12] board;
+        uint8[12] board;
     }
 
-    mapping (address => Player) public players;
+    mapping(address => Player) public players;
 
-    constructor() {
+    constructor() public {
         admin = msg.sender;
         celoToken = IERC20(_celoTokenAddress);
     }
     // block.difficulty
-    function randomBoard(uint256 _timestamp) internal returns (uint8[12] memory) {
+    function randomBoard(
+        uint256 _timestamp
+    ) internal returns (uint8[12] memory) {
         uint256 seed;
         uint8[12] memory board;
 
-        seed = uint256(
-            keccak256(
-                abi.encodePacked(_timestamp, "1212")
-            ));
+        seed = uint256(keccak256(abi.encodePacked(_timestamp, "1212")));
         for (uint8 i = 0; i < 12; i++) {
             board[i] = uint8(
-                uint256(keccak256(abi.encodePacked(seed, i))) % 9 + 1
+                (uint256(keccak256(abi.encodePacked(seed, i))) % 9) + 1
             );
         }
         return (board);
@@ -43,8 +42,7 @@ contract Sumsurge{
         }
     }
 
-    function start() external returns (uint8[12] memory){
-
+    function start() external returns (uint8[12] memory) {
         Player memory newPlayer = Player({
             id: msg.sender,
             level: 0,
@@ -56,12 +54,11 @@ contract Sumsurge{
         return (players[msg.sender].board);
     }
 
-    function nextLevel(uint _score) external returns (uint8 [12] memory){
-
+    function nextLevel(uint _score) external returns (uint8[12] memory) {
         players[msg.sender].score += _score;
         players[msg.sender].level++;
         resetBoard();
-        if (players[msg.sender].level > 3){
+        if (players[msg.sender].level > 3) {
             players[msg.sender].board = randomBoard(block.timestamp);
             remakeBoard();
         } else {
@@ -75,10 +72,14 @@ contract Sumsurge{
         uint256 seed;
 
         seed = uint256(
-            keccak256(abi.encodePacked(block.timestamp, players[msg.sender].score))
+            keccak256(
+                abi.encodePacked(block.timestamp, players[msg.sender].score)
+            )
         );
         num = uint8(
-            uint256(keccak256(abi.encodePacked(seed, players[msg.sender].level))) % _i + 1
+            (uint256(
+                keccak256(abi.encodePacked(seed, players[msg.sender].level))
+            ) % _i) + 1
         );
         return (num);
     }
@@ -91,7 +92,7 @@ contract Sumsurge{
             uint256 opSel = uint256(ranNum(5)) + 10; // Choose from [10, 11, 12, 13, 14, 15]
             uint256 boardSel = uint256(ranNum(12));
             players[msg.sender].board[boardSel] = uint8(opSel);
-        } 
+        }
         if (diff >= 6 && diff < 8) {
             for (uint256 i = 0; i < 2; i++) {
                 uint256 opSel = uint256(ranNum(5)) + 10;
@@ -116,21 +117,18 @@ contract Sumsurge{
         }
     }
 
-    function getBoard() public view returns (uint8[12] memory){
+    function getBoard() public view returns (uint8[12] memory) {
         return (players[msg.sender].board);
     }
-	function payOut() public payable {
-		require(players[msg.sender].score > 0, "No payout");
+    function payOut() public payable {
+        require(players[msg.sender].score > 0, "No payout");
         players[msg.sender].payout = players[msg.sender].score / 1000;
-        celoToken.approve(
-                admin,
-                players[msg.sender].payout
-        );
+        celoToken.approve(admin, players[msg.sender].payout);
         celoToken.transferFrom(
-                admin,
-                players[msg.sender].id,
-                players[msg.sender].payout
+            admin,
+            players[msg.sender].id,
+            players[msg.sender].payout
         );
         delete players[msg.sender];
     }
-} 
+}
