@@ -1,10 +1,10 @@
 'use client'
-
+import React from 'react'
 const  { ethers } = require("ethers");
 require('dotenv').config({path: '../../.env.local'});
 import { useState, useEffect } from 'react';
 import { motion, MotionConfig } from 'framer-motion';
-import sumsurgeabi from './abi.json';
+import sumsurgeabi from '../../sumSurgeDApp/build/contracts/Sumsurge.json';
 
 function App() {
 
@@ -55,15 +55,7 @@ function App() {
     const [gameStatus, setGameStatus] = useState('playing');
 
 //TESTING ETHERS JS FUNCTION CALL    
-    const [currentAccount, setCurrentAccount] = useState('')
-    const ERC20_ABI = sumsurgeabi.abi;
-    const address = '0x4495c65f31e935264367b7Ea5A825f2bd8c246b6'
-
-    const alfajores = {
-        chainId: 44787, // Celo Alfajores Testnet Chain ID
-        name: 'alfajores',
-        url: 'https://alfajores-forno.celo-testnet.org'
-    };
+    const contractAddress = '0x4495c65f31e935264367b7Ea5A825f2bd8c246b6'
 
     // Create a new provider instance
     const [walletAddress, setWalletAddress] = React.useState(null);
@@ -78,22 +70,123 @@ function App() {
         }
     };
 
-    const main = async () => {
-    const accounts = await provider.listAccounts();
-    console.log(accounts); // This will log the accounts
+    const[contract, setContract] = useState('null');
 
-    // If accounts are available, you can create a signer and contract instance
-    if (accounts.length > 0) {
-        const signer = provider.getSigner()
-        const contract = new ethers.Contract(address, ERC20_ABI, signer)
+    const interactContract = async () => {
+        try {
+            const provider = new ethers.providers.Web3Provider(window.ethereum)
+            const signer = provider.getSigner();
+            const contractInstance = new ethers.Contract(contractAddress, sumsurgeabi.abi, signer);
+            setContract(contractInstance); // set the state variable here
+        } catch (error) {
+            console.error(error);
         }
+    };
+
+    async function getAdmin() {
+        if (contract) { // check if contract is not null
+            const admin = await contract.admin();
+            console.log('Admin Address:', admin);
+        }
+    }
+/*
+
+Object { hash: "0x4bc9059d3d297b684ef0f4a2bfaaee8e0472ebb6d2ec32eea6d833417aca453c", type: 2, accessList: null, blockHash: null, blockNumber: null, transactionIndex: null, confirmations: 0, from: "0xD464074E2E65b8172D0e331248DDA3cAC1635219", gasPrice: {…}, maxPriorityFeePerGas: {…}, … }
+​
+accessList: null
+​
+blockHash: null
+​
+blockNumber: null
+​
+chainId: 0
+​
+confirmations: 0
+​
+creates: null
+​
+data: "0xbe9a6555"
+​
+from: "0xD464074E2E65b8172D0e331248DDA3cAC1635219"
+​
+gasLimit: Object { _hex: "0x011c3e", _isBigNumber: true }
+​​
+_hex: "0x011c3e"
+​​
+_isBigNumber: true
+​​
+<prototype>: Object { … }
+​
+gasPrice: Object { _hex: "0x02540be400", _isBigNumber: true }
+​
+hash: "0x4bc9059d3d297b684ef0f4a2bfaaee8e0472ebb6d2ec32eea6d833417aca453c"
+​
+maxFeePerGas: Object { _hex: "0x02540be400", _isBigNumber: true }
+​
+maxPriorityFeePerGas: Object { _hex: "0x02540be400", _isBigNumber: true }
+​
+nonce: 3
+​
+r: "0x6528dec7cb22c1eda7c80e6644a3dae8bed2432db017c4e9e4acd7043beb5ced"
+​
+s: "0x54083819a5076e1cebaf052668e8892ba1b762d031c0984723696bc8faca6d95"
+​
+to: "0x4495c65f31e935264367b7Ea5A825f2bd8c246b6"
+​
+transactionIndex: null
+​
+type: 2
+​
+v: 1
+​
+value: Object { _hex: "0x00", _isBigNumber: true }
+​
+wait: function wait(confirmations)​
+<prototype>: Object { … }
+
+*/
+    function hexToBytes(hex) {
+        const bytes = [];
+        for (let i = 0; i < hex.length; i += 2) {
+            bytes.push(parseInt(hex.substr(i, 2), 16));
+        }
+        return bytes;
+    }
+
+    function bytesToString(bytes) {
+        return new TextDecoder().decode(new Uint8Array(bytes));
+    }
+
+    async function startGame() {
+        const result = await contract.start();
+        // const resultBytes = hexToBytes(result);
+        // const resultsString = bytesToString(resultBytes);
+        console.log(result)
+    }
+    async function moveToNextLevel(score) {
+        const result = await contract.nextLevel(score).send({ from: walletAddress });
+        console.log('Moved to next level:', result);
+    }
+
+    // Function to trigger a payout
+    async function triggerPayout() {
+        const result = await contract.payOut().send({ from: walletAddress, value: ethers.utils.parseEther('1') });
+        console.log('Payout triggered:', result);
+    }
+
+const [gameArray, setGameArray] = useState('null');
+    const main = async () => {
+        await connectToWallet();
+        await interactContract();
+        //
+       startGame(); 
     }
 
     return (
             <>
 <div className="min-h-screen bg-gold flex items-center justify-center">
         <h1 className="text-4xl text-center font-bold">Game Part: </h1>
-        <button onClick={main}>Run main</button>
+        <button onClick={main}>main</button>
     <div className="text-center mx-9 space-y-4">
         <h1 className="text-4xl font-bold">Sum Surge!</h1>
     </div>      

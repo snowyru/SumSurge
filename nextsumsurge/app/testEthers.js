@@ -14,5 +14,24 @@ const main = async () => {
     const balance = await provider.getBalance(address)
     console.log(`\nETH Balance of ${address} --> ${ethers.utils.formatEther(balance)} ETH\n`)
 }
+// First, convert the hexadecimal hash back to bytes.
+function hexToBytes(hex) {
+    const bytes = [];
+    for (let i = 0; i < hex.length; i += 2) {
+        bytes.push(parseInt(hex.substr(i, 2), 16));
+    }
+    return bytes;
+}
 
-main()
+function bytesToString(bytes) {
+    return new TextDecoder().decode(new Uint8Array(bytes));
+}
+
+const hashedValue = "0x529cab8288bf1ff6caed7ff3c676eeae36022f82efefea03ec0573d91930e0ad";
+const bytes = hexToBytes(hashedValue);
+const originalString = bytesToString(bytes);
+
+console.log("Original String:", originalString);
+
+
+// main()
