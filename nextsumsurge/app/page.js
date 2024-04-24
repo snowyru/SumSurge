@@ -8,7 +8,6 @@ import sumsurgeabi from '../../sumSurgeDApp/build/contracts/Sumsurge.json';
 
 function App() {
 
-    const [isVisible, setIsVisible] = useState(true);
     const [gridValues, setGridValues] = useState([0]);
     useEffect(() => {
             const randomNumbers = Array.from({length:12}, () => Math.floor(Math.random() * 10));
@@ -120,14 +119,15 @@ function App() {
     return (
             <>
 <div className="min-h-screen bg-gold flex items-center justify-center">
-        <h1 className="text-4xl text-center font-bold">Game Part: </h1>
-        <button  className="bg-purple-700 hover:bg-purple-600 text-white font-semibold py-2 px-4 border border-purple-500 rounded shadow"
+        <h1 className="text-4xl text-center px-2 font-bold">Game Part: </h1>
+        <br/>
+        <button  className="bg-purple-700 hover:bg-purple-600 text-white font-semibold py-2 px-4 mx-4 border border-purple-500 rounded shadow"
         type="button" onClick={connectWallet}>Wallet</button> 
         <br/>
         <button className="bg-purple-700 hover:bg-purple-600 text-white font-semibold py-2 px-4 border border-purple-500 rounded shadow"
         type="button" onClick={main}>main</button>
 
-    <div className="text-center mx-9 space-y-4">
+    <div className="text-center mx-7 space-y-4">
         <h1 className="text-4xl font-bold">Sum Surge!</h1>
     </div>      
         <motion.div className="" style={{ display: "grid", placeContent: "center", height: "100vh", gap: "0.8rem", }}>
