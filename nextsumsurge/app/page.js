@@ -42,6 +42,7 @@ function App() {
         setScore([]); 
         setActiveRow(3); 
         setGameStatus('playing'); 
+        triggerPayout()
     };
 
     const handleContinue = () => {
@@ -49,6 +50,7 @@ function App() {
         setGridValues(randomNumbers);
         setScore([]);
         setActiveRow(3);
+        moveToNextLevel(score);
     };
 
     const [totalScore, setTotalScore] = useState(0);
@@ -89,87 +91,20 @@ function App() {
             console.log('Admin Address:', admin);
         }
     }
-/*
-
-Object { hash: "0x4bc9059d3d297b684ef0f4a2bfaaee8e0472ebb6d2ec32eea6d833417aca453c", type: 2, accessList: null, blockHash: null, blockNumber: null, transactionIndex: null, confirmations: 0, from: "0xD464074E2E65b8172D0e331248DDA3cAC1635219", gasPrice: {…}, maxPriorityFeePerGas: {…}, … }
-​
-accessList: null
-​
-blockHash: null
-​
-blockNumber: null
-​
-chainId: 0
-​
-confirmations: 0
-​
-creates: null
-​
-data: "0xbe9a6555"
-​
-from: "0xD464074E2E65b8172D0e331248DDA3cAC1635219"
-​
-gasLimit: Object { _hex: "0x011c3e", _isBigNumber: true }
-​​
-_hex: "0x011c3e"
-​​
-_isBigNumber: true
-​​
-<prototype>: Object { … }
-​
-gasPrice: Object { _hex: "0x02540be400", _isBigNumber: true }
-​
-hash: "0x4bc9059d3d297b684ef0f4a2bfaaee8e0472ebb6d2ec32eea6d833417aca453c"
-​
-maxFeePerGas: Object { _hex: "0x02540be400", _isBigNumber: true }
-​
-maxPriorityFeePerGas: Object { _hex: "0x02540be400", _isBigNumber: true }
-​
-nonce: 3
-​
-r: "0x6528dec7cb22c1eda7c80e6644a3dae8bed2432db017c4e9e4acd7043beb5ced"
-​
-s: "0x54083819a5076e1cebaf052668e8892ba1b762d031c0984723696bc8faca6d95"
-​
-to: "0x4495c65f31e935264367b7Ea5A825f2bd8c246b6"
-​
-transactionIndex: null
-​
-type: 2
-​
-v: 1
-​
-value: Object { _hex: "0x00", _isBigNumber: true }
-​
-wait: function wait(confirmations)​
-<prototype>: Object { … }
-
-*/
-    function hexToBytes(hex) {
-        const bytes = [];
-        for (let i = 0; i < hex.length; i += 2) {
-            bytes.push(parseInt(hex.substr(i, 2), 16));
-        }
-        return bytes;
-    }
-
-    function bytesToString(bytes) {
-        return new TextDecoder().decode(new Uint8Array(bytes));
-    }
 
     async function startGame() {
         const result = await contract.start();
-        const outputArray = arrayify(result)
+        const outputArray = ethers.utils.arrayify(result)
         console.log(outputArray);
     }
     async function moveToNextLevel(score) {
-        const result = await contract.nextLevel(score).send({ from: walletAddress });
+        const result = await contract.nextLevel(score);
         console.log('Moved to next level:', result);
     }
 
     // Function to trigger a payout
     async function triggerPayout() {
-        const result = await contract.payOut().send({ from: walletAddress, value: ethers.utils.parseEther('1') });
+        const result = await contract.payOut();
         console.log('Payout triggered:', result);
     }
 
@@ -178,7 +113,6 @@ wait: function wait(confirmations)​
         await interactContract();
     }
     const main = async () => {
-        //
         startGame();
     }
 
@@ -191,6 +125,7 @@ wait: function wait(confirmations)​
         <br/>
         <button className="bg-purple-700 hover:bg-purple-600 text-white font-semibold py-2 px-4 border border-purple-500 rounded shadow"
         type="button" onClick={main}>main</button>
+
     <div className="text-center mx-9 space-y-4">
         <h1 className="text-4xl font-bold">Sum Surge!</h1>
     </div>      
@@ -232,7 +167,6 @@ wait: function wait(confirmations)​
     </motion.div>
         </motion.div>
         </MotionConfig>
-
         <motion.div className="text-center text-5xl font-thin text-indigo-300 pb-1" >Total Score: {totalScore}</motion.div>
         </motion.div>
 </div>
