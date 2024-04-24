@@ -159,9 +159,8 @@ wait: function wait(confirmations)​
 
     async function startGame() {
         const result = await contract.start();
-        // const resultBytes = hexToBytes(result);
-        // const resultsString = bytesToString(resultBytes);
-        console.log(result)
+        const outputArray = arrayify(result)
+        console.log(outputArray);
     }
     async function moveToNextLevel(score) {
         const result = await contract.nextLevel(score).send({ from: walletAddress });
@@ -174,19 +173,24 @@ wait: function wait(confirmations)​
         console.log('Payout triggered:', result);
     }
 
-const [gameArray, setGameArray] = useState('null');
-    const main = async () => {
+    const connectWallet = async () => {
         await connectToWallet();
         await interactContract();
+    }
+    const main = async () => {
         //
-       startGame(); 
+        startGame();
     }
 
     return (
             <>
 <div className="min-h-screen bg-gold flex items-center justify-center">
         <h1 className="text-4xl text-center font-bold">Game Part: </h1>
-        <button onClick={main}>main</button>
+        <button  className="bg-purple-700 hover:bg-purple-600 text-white font-semibold py-2 px-4 border border-purple-500 rounded shadow"
+        type="button" onClick={connectWallet}>Wallet</button> 
+        <br/>
+        <button className="bg-purple-700 hover:bg-purple-600 text-white font-semibold py-2 px-4 border border-purple-500 rounded shadow"
+        type="button" onClick={main}>main</button>
     <div className="text-center mx-9 space-y-4">
         <h1 className="text-4xl font-bold">Sum Surge!</h1>
     </div>      
