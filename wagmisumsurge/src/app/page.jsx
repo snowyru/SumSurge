@@ -1,8 +1,29 @@
 'use client'
 
+const { ethers } = require("ethers");
+require('dotenv').config({path: '../../.env.local'});
 import { useState, useEffect } from 'react'
 import { useAccount, useConnect, useDisconnect } from 'wagmi'
 import { motion, MotionConfig } from 'framer-motion'
+import {useReadContract} from 'wagmi'
+
+//TESTING FUNCTION CALLS
+
+/* const provider = new ethers.providers.Web3Provider(window.ethereum);
+const signer = provider.getSigner();
+
+const ERC20_ABI = [
+    "function getBoard() view returns (unit8[12])",
+];
+
+const address = '0x4495c65f31e935264367b7Ea5A825f2bd8c246b6'
+const contract = new ethers.Contract(address, ERC20_ABI, signer)
+
+
+const main = async () => {
+    const board = await contract.getBoard()
+    console.log("board: ", board)
+} */
 
 function App() {
     const account = useAccount()
@@ -55,11 +76,23 @@ function App() {
     const [totalScore, setTotalScore] = useState(0);
     const [gameStatus, setGameStatus] = useState('playing');
 
+// FUNCTION CALL TESTING WAGMI
+    const [balance, setBalance] = useState(null);
+    function main() {
+        const {data:balance} = useReadContract({
+            ...wagmiContractConfig,
+            functionName: 'balanceof',
+            args: ['0x4495c65f31e935264367b7Ea5A825f2bd8c246b6'],
+        })
+        setBalance(balance);
+    }
 
     return (
             <>
 <div className="min-h-screen bg-purple-900 text-white flex items-center justify-center">
   <div className="space-y-4">
+        <h1>Balance: {balance?.toString()}</h1>
+        <button className="bg-purple-700 hover:bg-purple-600 text-white font-semibold py-2 px-4 border border-purple-500 rounded shadow" onClick={main}>TESTING</button>
     <h1 className="text-4xl font-bold">Wagmi part</h1>
     <h2 className="text-3xl">Account</h2>
 
